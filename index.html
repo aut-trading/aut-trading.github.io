@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AUT Trade Calculator</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #36393f;
+    color: #fff;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #fff;
+}
+
+#tradeCalculator {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #2f3136;
+    border-radius: 5px;
+    background-color: #2f3136;
+}
+
+form {
+    margin-top: 20px;
+}
+
+fieldset {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #2f3136;
+    border-radius: 5px;
+    background-color: #36393f;
+}
+
+legend {
+    font-weight: bold;
+    color: #fff;
+}
+
+.player-items {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #2f3136;
+    border-radius: 5px;
+    background-color: #40444b;
+    color: #fff;
+}
+
+#additionalItemsContainer {
+    margin-bottom: 20px;
+}
+
+button {
+    display: block;
+    margin-bottom: 10px;
+    padding: 8px 15px;
+    background-color: #7289da;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"] {
+    background-color: #43b581;
+}
+
+#tradeResult {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #2f3136;
+    border-radius: 5px;
+    background-color: #36393f;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+#player1ItemsResult,
+#player2ItemsResult {
+    margin-bottom: 10px;
+}
+
+ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+#tradeFairnessResult {
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Adjusted Button Styles */
+button {
+    background-color: #7289da;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"] {
+    background-color: #43b581;
+}
+
+button:hover {
+    background-color: #677bc4;
+}
+
+    </style>
+</head>
+<body>
+    <div id="tradeCalculator">
+        <h1>AUT Trade Calculator</h1>
+        <form id="tradeForm">
+            <fieldset id="player1ItemsContainer">
+                <legend>Player 1 Items</legend>
+                <select class="player-items" name="player1Items[]">
+                    <option value="" disabled selected>Select an item</option>
+                    <option value="TWR">TWR</option>
+                    <option value="DTWHV">DTWHV</option>
+                    <option value="KCR">KCR</option>
+                    <option value="Galizur">Galizur</option>
+                    <option value="V2">V2</option>
+                    <option value="Dr Puddest">Dr Puddest</option>
+                    <option value="Velvet Shaper">Velvet Shaper</option>
+                    <option value="Noob">Noob</option>
+                    <option value="Chainsaw Devil">Chainsaw Devil</option>
+                    <option value="DJ">DJ</option>
+                    <option value="Cypher">Cypher</option>
+                    <option value="Fallen">Fallen</option>
+                    <option value="Party">Party</option>
+                    <option value="CQ">CQ</option>
+                    <option value="Polaris">Polaris</option>
+                    <option value="VKQ">VKQ</option>
+                    <option value="Slegs">Slegs</option>
+                    <option value="TWGH">TWGH</option>
+                </select>
+            </fieldset>
+
+            <fieldset id="player2ItemsContainer">
+                <legend>Player 2 Items</legend>
+                <select class="player-items" name="player2Items[]">
+                    <option value="" disabled selected>Select an item</option>
+                    <option value="TWR">TWR</option>
+                    <option value="DTWHV">DTWHV</option>
+                    <option value="KCR">KCR</option>
+                    <option value="Galizur">Galizur</option>
+                    <option value="V2">V2</option>
+                    <option value="Dr Puddest">Dr Puddest</option>
+                    <option value="Velvet Shaper">Velvet Shaper</option>
+                    <option value="Noob">Noob</option>
+                    <option value="Chainsaw Devil">Chainsaw Devil</option>
+                    <option value="DJ">DJ</option>
+                    <option value="Cypher">Cypher</option>
+                    <option value="Fallen">Fallen</option>
+                    <option value="Party">Party</option>
+                    <option value="CQ">CQ</option>
+                    <option value="Polaris">Polaris</option>
+                    <option value="VKQ">VKQ</option>
+                    <option value="Slegs">Slegs</option>
+                    <option value="TWGH">TWGH</option>
+                </select>
+            </fieldset>
+
+            <div id="additionalItemsContainer"></div>
+
+            <button type="button" onclick="addPlayerItems('player1ItemsContainer')">+ Add Item for Player 1</button>
+            <button type="button" onclick="addPlayerItems('player2ItemsContainer')">+ Add Item for Player 2</button>
+
+            <button type="submit">Calculate Trade</button>
+        </form>
+
+        <div id="tradeResult" style="display: none;">
+            <h2>Trade Result</h2>
+            <div id="player1ItemsResult"></div>
+            <div id="player2ItemsResult"></div>
+            <p id="tradeFairnessResult"></p>
+<p id="recommendedTradeResult"></p>
+        </div>
+    </div>
+
+    <script>
+const ITEM_OPTIONS = [
+            {"name": "TWR", "points": 45},
+            {"name": "DTWHV", "points": 29},
+            {"name": "KCR", "points": 26},
+            {"name": "Galizur", "points": 24},
+            {"name": "V2", "points": 21.25},
+            {"name": "Dr Puddest", "points": 21.15},
+            {"name": "Velvet Shaper", "points": 21},
+            {"name": "Noob", "points": 18},
+            {"name": "Chainsaw Devil", "points": 16},
+            {"name": "DJ", "points": 15.5},
+            {"name": "Cypher", "points": 14.5},
+            {"name": "Fallen", "points": 14.25},
+            {"name": "Party", "points": 13},
+            {"name": "CQ", "points": 11.5},
+            {"name": "Polaris", "points": 11},
+            {"name": "VKQ", "points": 9.5},
+            {"name": "Slegs", "points": 8},
+            {"name": "TWGH", "points": 2.75},
+        ];
+
+        const tradeForm = document.getElementById("tradeForm");
+        const player1ItemsResult = document.getElementById("player1ItemsResult");
+        const player2ItemsResult = document.getElementById("player2ItemsResult");
+        const tradeFairnessResult = document.getElementById("tradeFairnessResult");
+        const tradeResult = document.getElementById("tradeResult");
+
+        tradeForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const itemsPlayer1 = getPlayerItems("player1ItemsContainer");
+            const itemsPlayer2 = getPlayerItems("player2ItemsContainer");
+            const pointsPlayer1 = calculateTotalPoints(itemsPlayer1);
+            const pointsPlayer2 = calculateTotalPoints(itemsPlayer2);
+            const tradeFairness = calculateTradeFairness(pointsPlayer1, pointsPlayer2);
+            displayTradeResult(itemsPlayer1, itemsPlayer2, tradeFairness);
+        });
+
+        function getPlayerItems(containerId) {
+            const container = document.getElementById(containerId);
+            const selectElements = container.getElementsByClassName("player-items");
+            const items = [];
+
+            for (let i = 0; i < selectElements.length; i++) {
+                const selectedItem = selectElements[i].value;
+
+                if (selectedItem) {
+                    const item = ITEM_OPTIONS.find(option => option.name === selectedItem);
+                    items.push(item);
+                }
+            }
+
+            return items;
+        }
+
+        function calculateTotalPoints(items) {
+            return items.reduce((totalPoints, item) => totalPoints + item.points, 0);
+        }
+
+        function calculateTradeFairness(pointsPlayer1, pointsPlayer2) {
+            const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
+            const tradeFairness = fairnessPercentage < 10 ? "Fair Trade" : "Unfair Trade";
+            const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
+
+            return `${tradeFairness} (${unfairPlayer} is at a disadvantage)`;
+        }
+
+        function displayTradeResult(itemsPlayer1, itemsPlayer2, tradeFairness) {
+            player1ItemsResult.innerHTML = "";
+            player2ItemsResult.innerHTML = "";
+            tradeFairnessResult.textContent = "";
+
+            for (const item of itemsPlayer1) {
+                const listItem = document.createElement("li");
+                listItem.textContent = item.name;
+                player1ItemsResult.appendChild(listItem);
+            }
+
+            for (const item of itemsPlayer2) {
+                const listItem = document.createElement("li");
+                listItem.textContent = item.name;
+                player2ItemsResult.appendChild(listItem);
+            }
+
+            tradeFairnessResult.textContent = tradeFairness;
+            tradeResult.style.display = "block";
+        }
+
+        function addPlayerItems(containerId) {
+            const container = document.getElementById(containerId);
+
+            const newItemSelect = document.createElement("select");
+            newItemSelect.className = "player-items";
+            newItemSelect.name = `${containerId}-select`;
+
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = "Select an item";
+            newItemSelect.appendChild(defaultOption);
+
+            for (const option of ITEM_OPTIONS) {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.name;
+                optionElement.textContent = option.name;
+                newItemSelect.appendChild(optionElement);
+            }
+
+            container.appendChild(document.createElement("br"));
+            container.appendChild(newItemSelect);
+        }
+    </script>
+</body>
+</html>
