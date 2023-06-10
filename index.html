@@ -2,6 +2,11 @@
 <html>
 <head>
     <title>AUT Trade Calculator</title>
+<script>
+window.addEventListener('load', function() {
+    document.getElementById('playerItems').selectedIndex = 0;
+  });
+</script>
     <style>
         body {
     font-family: Arial, sans-serif;
@@ -273,12 +278,58 @@ const ITEM_OPTIONS = [
         }
 
         function calculateTradeFairness(pointsPlayer1, pointsPlayer2) {
-            const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
-            const tradeFairness = fairnessPercentage < 10 ? "Fair Trade" : "Unfair Trade";
-            const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
+    const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
+    const tradeFairness = fairnessPercentage < 3 ? "Fair Trade" : "Unfair Trade";
 
-            return `${tradeFairness} (${unfairPlayer} is at a disadvantage)`;
+    if (pointsPlayer1 === pointsPlayer2) {
+        return "Fair trade. Both offers are equal";
+    }
+
+    const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
+    const fairPlayer = pointsPlayer1 < pointsPlayer2 ? "Player 1" : "Player 2";
+    let fairnessDifference = Math.abs(pointsPlayer1 - pointsPlayer2);
+
+    const excludedItem = "TWGH";
+    const sortedItems = ITEM_OPTIONS
+        .filter(item => item.name !== excludedItem)
+        .sort((a, b) => b.points - a.points);
+
+    const selectedItems = [];
+    let totalPoints = 0;
+
+    for (const item of sortedItems) {
+        if (totalPoints + item.points <= fairnessDifference) {
+            selectedItems.push(item);
+            totalPoints += item.points;
         }
+
+        if (totalPoints >= fairnessDifference || totalPoints >= 45) {
+            break;
+        }
+    }
+
+    const itemNames = selectedItems.map(item => item.name);
+    const lastItemIndex = itemNames.length - 1;
+    let itemList = "";
+
+    if (itemNames.length === 1) {
+        itemList = itemNames[0];
+    } else {
+        itemList = itemNames.slice(0, lastItemIndex).join(", ");
+        itemList += `, and ${itemNames[lastItemIndex]}`;
+    }
+
+    let tradeResult = tradeFairness;
+
+    if (fairnessDifference > 0 && itemNames.length > 0) {
+        tradeResult += ` (${fairPlayer} may need to add ${itemList})`;
+    }
+
+    return tradeResult;
+}
+
+
+
 
         function displayTradeResult(itemsPlayer1, itemsPlayer2, tradeFairness) {
             player1ItemsResult.innerHTML = "";
@@ -321,6 +372,7 @@ const ITEM_OPTIONS = [
 
             container.appendChild(selectElement);
         }
+
     </script>
 </body>
 </html>
