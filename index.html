@@ -116,6 +116,21 @@ button[type="submit"] {
 button:hover {
     background-color: #677bc4;
 }
+.discord-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.discord-link a {
+  color: #7289DA;
+  text-decoration: none;
+}
+
+.discord-link a:hover {
+  color: #5469A4;
+}
+
 
     </style>
 </head>
@@ -189,6 +204,14 @@ button:hover {
 <p id="recommendedTradeResult"></p>
         </div>
     </div>
+
+<div class="discord-link">
+  <a href="https://discord.gg/McSby44HCR" target="_blank">Join our Discord server</a>
+</div>
+
+
+
+
 
     <script>
 const ITEM_OPTIONS = [
@@ -280,27 +303,23 @@ const ITEM_OPTIONS = [
 
         function addPlayerItems(containerId) {
             const container = document.getElementById(containerId);
+            const selectElement = document.createElement("select");
+            selectElement.className = "player-items";
+            selectElement.name = "player1Items[]";
+            const optionElement = document.createElement("option");
+            optionElement.value = "";
+            optionElement.disabled = true;
+            optionElement.selected = true;
+            optionElement.textContent = "Select an item";
 
-            const newItemSelect = document.createElement("select");
-            newItemSelect.className = "player-items";
-            newItemSelect.name = `${containerId}-select`;
-
-            const defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            defaultOption.textContent = "Select an item";
-            newItemSelect.appendChild(defaultOption);
-
-            for (const option of ITEM_OPTIONS) {
-                const optionElement = document.createElement("option");
-                optionElement.value = option.name;
-                optionElement.textContent = option.name;
-                newItemSelect.appendChild(optionElement);
+            for (const itemOption of ITEM_OPTIONS) {
+                const option = document.createElement("option");
+                option.value = itemOption.name;
+                option.textContent = itemOption.name;
+                selectElement.appendChild(option);
             }
 
-            container.appendChild(document.createElement("br"));
-            container.appendChild(newItemSelect);
+            container.appendChild(selectElement);
         }
     </script>
 </body>
