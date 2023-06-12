@@ -278,50 +278,55 @@ const ITEM_OPTIONS = [
         }
 
         function calculateTradeFairness(pointsPlayer1, pointsPlayer2) {
-    const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
-    const tradeFairness = fairnessPercentage < 3 ? "Fair Trade" : "Unfair Trade";
-    const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
-    const fairPlayer = pointsPlayer1 < pointsPlayer2 ? "Player 1" : "Player 2";
-    let fairnessDifference = Math.abs(pointsPlayer1 - pointsPlayer2);
+  const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
+  const tradeFairness = fairnessPercentage < 3 ? "Fair Trade" : "Unfair Trade";
+  const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
+  const fairPlayer = pointsPlayer1 < pointsPlayer2 ? "Player 1" : "Player 2";
+  let fairnessDifference = Math.abs(pointsPlayer1 - pointsPlayer2);
 
-    const excludedItem = "TWGH";
-    const sortedItems = ITEM_OPTIONS
-        .filter(item => item.name !== excludedItem)
-        .sort((a, b) => b.points - a.points);
+  const excludedItem = "TWGH";
+  const sortedItems = ITEM_OPTIONS
+    .filter(item => item.name !== excludedItem)
+    .sort((a, b) => b.points - a.points);
 
-    const selectedItems = [];
-    let totalPoints = 0;
+  const selectedItems = [];
+  let totalPoints = 0;
 
-    for (const item of sortedItems) {
-        if (totalPoints + item.points <= fairnessDifference) {
-            selectedItems.push(item);
-            totalPoints += item.points;
-        }
-
-        if (totalPoints >= fairnessDifference || totalPoints >= 45) {
-            break;
-        }
+  for (const item of sortedItems) {
+    if (totalPoints + item.points <= fairnessDifference) {
+      selectedItems.push(item);
+      totalPoints += item.points;
     }
 
-    const itemNames = selectedItems.map(item => item.name);
-    const lastItemIndex = itemNames.length - 1;
-    let itemList = "";
+    if (totalPoints >= fairnessDifference || totalPoints >= 45) {
+      break;
+    }
+  }
 
-    if (itemNames.length === 1) {
-        itemList = itemNames[0];
+  const itemNames = selectedItems.map(item => item.name);
+  const lastItemIndex = itemNames.length - 1;
+  let itemList = "";
+
+  if (itemNames.length === 1) {
+    itemList = itemNames[0];
+  } else if (itemNames.length > 1) {
+    itemList = itemNames.slice(0, lastItemIndex).join(", ");
+    itemList += `, and ${itemNames[lastItemIndex]}`;
+  }
+
+  let tradeResult = tradeFairness;
+
+  if (fairnessDifference > 0) {
+    if (itemList) {
+      tradeResult += ` (${fairPlayer} may need to add ${itemList})`;
     } else {
-        itemList = itemNames.slice(0, lastItemIndex).join(", ");
-        itemList += `, and ${itemNames[lastItemIndex]}`;
+      tradeResult = "Fair Trade";
     }
+  }
 
-    let tradeResult = tradeFairness;
-
-    if (fairnessDifference > 0) {
-        tradeResult += ` (${fairPlayer} may need to add ${itemList})`;
-    }
-
-    return tradeResult;
+  return tradeResult;
 }
+
 
 
 
@@ -369,6 +374,7 @@ const ITEM_OPTIONS = [
             container.appendChild(selectElement);
         }
 
+        
     </script>
 </body>
 </html>
