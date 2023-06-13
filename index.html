@@ -280,7 +280,7 @@ const ITEM_OPTIONS = [
 
         function calculateTradeFairness(pointsPlayer1, pointsPlayer2) {
   const fairnessPercentage = Math.abs(pointsPlayer1 - pointsPlayer2) / ((pointsPlayer1 + pointsPlayer2) / 2) * 100;
-  const tradeFairness = fairnessPercentage < 3 ? "Fair Trade" : "Unfair Trade";
+  const tradeFairness = fairnessPercentage < 1.1 ? "Fair Trade" : "Unfair Trade";
   const unfairPlayer = pointsPlayer1 > pointsPlayer2 ? "Player 1" : "Player 2";
   const fairPlayer = pointsPlayer1 < pointsPlayer2 ? "Player 1" : "Player 2";
   let fairnessDifference = Math.abs(pointsPlayer1 - pointsPlayer2);
